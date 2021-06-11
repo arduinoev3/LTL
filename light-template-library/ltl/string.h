@@ -6,8 +6,6 @@
 #include "ltl/exception.h"
 #include "ltl/vector.h"
 
-#include <string>
-
 namespace ltd {
     class string {
         vector<char> data;
@@ -243,14 +241,18 @@ namespace ltd {
         if (conv == 0)
             ans = "0";
         else {
+            bool change = false;
             if (conv < 0) {
-                ans += '-';
+                change = true;
                 conv = -conv;
             }
             while (conv) {
                 char toInsert = (conv % 10) + '0';
                 ans = toInsert + ans;
                 conv /= 10;
+            }
+            if (change) {
+                ans = '-' + ans;
             }
         }
         return ans;

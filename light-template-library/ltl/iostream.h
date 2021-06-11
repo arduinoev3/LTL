@@ -13,8 +13,39 @@ namespace ltd {
             def = _def;
         }
 
-        template<class T>
-        ostream& operator<<(T x) {
+        ostream& operator<<(const char* x) {
+            string s = to_string(x);
+            for (int i = 0; i < s.size(); ++i) {
+                def(s[i]);
+            }
+            return *this;
+        }
+
+        ostream& operator<<(char* x) {
+            string s = to_string(x);
+            for (int i = 0; i < s.size(); ++i) {
+                def(s[i]);
+            }
+            return *this;
+        }
+
+        ostream& operator<<(string x) {
+            string s = to_string(x);
+            for (int i = 0; i < s.size(); ++i) {
+                def(s[i]);
+            }
+            return *this;
+        }
+
+        ostream& operator<<(char x) {
+            string s = to_string(x);
+            for (int i = 0; i < s.size(); ++i) {
+                def(s[i]);
+            }
+            return *this;
+        }
+
+        ostream& operator<<(int x) {
             string s = to_string(x);
             for (int i = 0; i < s.size(); ++i) {
                 def(s[i]);

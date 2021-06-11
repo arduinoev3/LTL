@@ -16,4 +16,9 @@ int main()
     d.push_front(0);
     d.push_front(0);
     cout << d;
+    d.pop_front();
+    d.pop_front();
+    d.pop_front();
+    d.pop_front();
+    cout << d;
 }
