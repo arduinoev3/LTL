@@ -3,15 +3,13 @@
 #ifndef STRING_LTD
 #define STRING_LTD
 
-#include "exception.h"
-#include "vector.h"
+#include "ltl/exception.h"
+#include "ltl/vector.h"
 
 #include <string>
 
 namespace ltd {
-    typedef std::string string;
-
-    /*class string {
+    class string {
         vector<char> data;
     public:
         string();
@@ -19,6 +17,7 @@ namespace ltd {
         string(int, char);
         string(char*);
         string(const char*);
+        string(char);
 
         void pb(char);
         void push_back(char);
@@ -26,8 +25,8 @@ namespace ltd {
         int size() const;
         bool empty();
         void clear();
-        char& operator[](const int);
-        const char& operator[](const int) const;
+        char& operator[](int);
+        const char& operator[](int) const;
         void operator=(const string&);
         void operator=(char*&);
         void operator=(const char*&);
@@ -38,22 +37,6 @@ namespace ltd {
         char* end();
         void erase(char*);
     };
-
-#ifdef _IOSTREAM_
-    std::ostream& operator<< (std::ostream& out, const string& s) {
-        for (int i = 0; i < s.size(); ++i)
-            out << s[i];
-        return out;
-    }
-#endif
-
-#ifdef IOSTREAM_LTD
-    ostream& operator<< (ostream& out, const string& s) {
-        for (int i = 0; i < s.size(); ++i)
-            out << s[i];
-        return out;
-    }
-#endif
 
     string::string() : data() {
         data.pb('\0');
@@ -69,18 +52,24 @@ namespace ltd {
 
     string::string(char* chr) : data() {
         int i = 0;
-        while (chr[i] != '\o') {
+        while (chr[i] != '\0') {
             push_back(chr[i]);
             ++i;
         }
     }
 
     string::string(const char* chr) : data() {
+        data.pb('\0');
         int i = 0;
-        while (chr[i] != '\o') {
+        while (chr[i] != '\0') {
             push_back(chr[i]);
             ++i;
         }
+    }
+
+    string::string(char chr) : data() {
+        data.pb(chr);
+        data.pb('\0');
     }
 
     int string::size() const {
@@ -111,13 +100,13 @@ namespace ltd {
         data.pb('\0');
     }
 
-    char& string::operator[](const int ind) {
+    char& string::operator[](int ind) {
         if (ind < 0 || data.size() - 1 <= ind)
             throw out_of_range("string range");
         return data[ind];
     }
 
-    const char& string::operator[](const int ind) const {
+    const char& string::operator[](int ind) const {
         if (ind < 0 || data.size() - 1 <= ind)
             throw out_of_range("string range");
         return data[ind];
@@ -225,7 +214,15 @@ namespace ltd {
     string operator*=(string& a, int b) {
         a = a * b;
         return a;
-    }*/
+    }
+
+#ifdef _IOSTREAM_
+    std::ostream& operator<< (std::ostream& out, const string& s) {
+        for (int i = 0; i < s.size(); ++i)
+            out << s[i];
+        return out;
+    }
+#endif // _IOSTREAM_
 
     string to_string(const char* conv) {
         return string(conv);
@@ -252,7 +249,7 @@ namespace ltd {
             }
             while (conv) {
                 char toInsert = (conv % 10) + '0';
-                ans.insert(0, 1, toInsert);
+                ans = toInsert + ans;
                 conv /= 10;
             }
         }

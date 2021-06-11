@@ -3,7 +3,7 @@
 #ifndef VECTOR_LTD
 #define VECTOR_LTD
 
-#include "exception.h"
+#include "ltl/exception.h"
 
 namespace ltd {
     template <class T>
@@ -23,10 +23,11 @@ namespace ltd {
         void push_back(T);
         void pop_back();
         int size() const;
+        int max_size();
         bool empty();
         void clear();
-        T& operator[](const int);
-        const T& operator[](const int) const;
+        T& operator[](int);
+        const T& operator[](int) const;
         void operator=(const vector&);
 
         operator int();
@@ -38,13 +39,11 @@ namespace ltd {
         friend class string;
     };
 
-    
-
     template <class T>
     vector<T>::vector() : ptr(NULL), now(0), capacity(0) {}
 
     template <class T>
-    vector<T>::vector(int need) : ptr(new T[need]), now(need), capacity(need) {}
+    vector<T>::vector(int need) : ptr(new T[need]), now(0), capacity(need) {}
 
     template <class T>
     vector<T>::vector(int need, T write) : ptr(new T[need]), now(need), capacity(need) {
@@ -66,6 +65,11 @@ namespace ltd {
     template <class T>
     int vector<T>::size() const {
         return now;
+    }
+
+    template <class T>
+    int vector<T>::max_size() {
+        return capacity;
     }
 
     template <class T>
@@ -91,7 +95,7 @@ namespace ltd {
 
     template <class T>
     void vector<T>::pop_back() {
-        --size;
+        --now;
     }
 
     template <class T>
@@ -108,14 +112,14 @@ namespace ltd {
     }
 
     template <class T>
-    T& vector<T>::operator[](const int ind) {
-        if (ind < 0 || now <= ind)
+    T& vector<T>::operator[](int ind) {
+        if (ind < 0 || ind >= now)
             throw out_of_range("vector range");
         return ptr[ind];
     }
 
     template <class T>
-    const T& vector<T>::operator[](const int ind) const {
+    const T& vector<T>::operator[](int ind) const {
         if (ind < 0 || now <= ind)
             throw out_of_range("vector range");
         return ptr[ind];
@@ -216,23 +220,19 @@ namespace ltd {
         return a;
     }
 
+#ifdef _IOSTREAM_
     template <class T>
     std::ostream& operator<< (std::ostream& out, const vector<T>& vec) {
         out << '[';
         for (int i = 0; i < vec.size() - 1; ++i)
             out << vec[i] << ", ";
-        out << vec[vec.size() - 1] << ']';
+        if (vec.size() > 0)
+            out << vec[vec.size() - 1];
+        out << ']';
         return out;
     }
-
-    template <class T>
-    ostream& operator<<(ostream& out, vector<T> vec) {
-        out << '[';
-        for (int i = 0; i < vec.size() - 1; ++i)
-            out << vec[i] << ", ";
-        out << vec[vec.size() - 1] << ']';
-        return out;
-    }
+#endif // _IOSTREAM_
 }
+
 
 #endif
