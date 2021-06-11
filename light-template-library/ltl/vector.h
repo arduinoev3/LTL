@@ -3,7 +3,7 @@
 #ifndef VECTOR_LTD
 #define VECTOR_LTD
 
-#include "ltl/Exception.h"
+#include "exception.h"
 
 namespace ltd {
     template <class T>
@@ -38,7 +38,6 @@ namespace ltd {
         friend class string;
     };
 
-
 #ifdef _IOSTREAM_
     template <class T>
     std::ostream& operator<< (std::ostream& out, const vector<T>& vec) {
@@ -60,8 +59,6 @@ namespace ltd {
         return out;
     }
 #endif
-
-    
 
     template <class T>
     vector<T>::vector() : ptr(NULL), now(0), capacity(0) {}

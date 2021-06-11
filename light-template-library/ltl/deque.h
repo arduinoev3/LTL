@@ -3,151 +3,168 @@
 #ifndef DEQUE_LTD
 #define DEQUE_LTD
 
-#include "ltl/Exception.h"
-#include "Vector.h"
+#include "exception.h"
+#include "vector.h"
 
 namespace ltd {
     template <class T>
     class deque {
-        T* startPtr;    // указывает на начало выделенной памяти
-        T* frontPtr;    // указывает на первый элемент в деке
-        T* backPtr;     // указывает на последний элемет в деке
-        int maxSize;    // максимальный размер, указанный при создании дека
-
+        vector<T> data;
+        int first;
+        int last;
     public:
-        void setStartPtr(T*);   // сеттер
-        void setFrontPtr(T*);   // сеттер
-        void setBackPtr(T*);    // сеттер
-        void setMaxSize(T*);    // сеттер
 
-        T* getStartPtr() const; // геттер
-        T* getFrontPtr() const; // геттер
-        T* getBackPtr() const;  // геттер
-        T* getMaxSize() const;  // геттер
+        deque();
+        deque(int);
 
-        deque(int);                    // простой конструктор с указанием наксимального кол-ва элементов, которые будут добавлены в дек
-        deque(const deque&);           // конструктор копирования с полным поэлементым копированием
-        ~deque();                      // дестркутор с простой очиткой памяти
+        T& front();
+        T& back();
 
-        T& front();             // возврашает элемент в начале дека
-        T& back();              // возвращает элемент в конце дека
+        void push_front(T);
+        void push_back(T);
 
-        void push_front(T);     // добавление элемента в начало дека
-        void push_back(T);      // добавление элемента в конец дека
+        T pop_front();
+        T pop_back();
 
-        T& pop_front();         // удаление элемента из начала дека
-        T& pop_back();          // удаление элемента из конца дека
+        int size() const;
+        
+        bool empty();
 
-        int size();             // вернет текущий размер дека
-        int max_size() const;   // вернет максимальный размер дека в одну сторону (относительно начального указателя)
+        void clear();
 
-        bool empty();           // вернет True, если дек пуст, и False, если дек не пуст
+        T& operator[](int);
+        
+        auto begin();
+        auto end();
 
-        void clear();           // очищает дек, не удаляя элементы, а просто сдвигая указатели
-
-        T& operator[](int);     // обращаестя к нужному элементу дека по очереди считая от начала (асимптотика O(1))
-        T& at(int);             // аналогичен operator[]
-
-        auto begin();           // итератор на начало дека
-        auto end();             // итератор на следующую ячейку за концом дека
-
-        void operator=(deque&); // полное поэлементное копирование
-
-        operator int();         // вернет размер
-        operator bool();        // вернет True, если дек не пуст, и False, если дек пуст
+        operator int();
+        operator bool();
     };
 
-    // сеттеры
+#ifdef _IOSTREAM_
     template <class T>
-    void deque<T>::setStartPtr(T* newStartPtr) { startPtr = newStartPtr; };
+    std::ostream& operator<< (std::ostream& out, const deque<T>& dec) {
+        out << '[';
+        for (int i = 0; i < dec.size() - 1; ++i)
+            out << dec[i] << ", ";
+        out << dec[vec.size() - 1] << ']';
+        return out;
+    }
+#endif
+
+#ifdef IOSTREAM_LTD
     template <class T>
-    void deque<T>::setFrontPtr(T* newFrontPtr) { frontPtr = newFrontPtr; };
+    ltd::ostream& operator<< (ltd::ostream& out, const deque<T>& dec) {
+        out << '[';
+        for (int i = 0; i < dec.size() - 1; ++i)
+            out << dec[i] << ", ";
+        out << dec[vec.size() - 1] << ']';
+        return out;
+    }
+#endif
+
     template <class T>
-    void deque<T>::setBackPtr(T* newBackPtr) { backPtr = newBackPtr; };
+    deque<T>::deque() : data(1), first(0), last(0) {}
+
     template <class T>
-    void deque<T>::setMaxSize(T* newMaxSize) { maxSize = newMaxSize; };
+    deque<T>::deque(int start_len) : data(start_len), first(0), last(0) {}
 
-    // геттеры
     template <class T>
-    T* deque<T>::getStartPtr() const { return startPtr; };
+    int deque<T>::size() const {
+        if (first - last > 0)
+            return first - last;
+        else
+            return last - first;
+    }
+    
     template <class T>
-    T* deque<T>::getFrontPtr() const { return frontPtr; };
+    T& deque<T>::front() {
+        if (first == last)
+            throw out_of_range("deque front");
+        return data[first];
+    }
+    
     template <class T>
-    T* deque<T>::getBackPtr() const { return backPtr; };
-    template <class T>
-    T* deque<T>::getMaxSize() const { return maxSize; };
-
-    template <class T>  // простой конструктор с указанием наксимального кол-ва элементов, которые будут добавлены в дек
-    deque<T>::deque(int maxLen) : startPtr(new T[maxLen * 2 - 1]),
-        frontPtr(startPtr + maxLen - 1),
-        backPtr(startPtr + maxLen - 2),
-        maxSize(maxLen) {};
-
-    template <class T>  // конструктор копирования с полным поэлементым копированием
-    deque<T>::deque(const deque& copy) : startPtr(new T[copy.max_size() * 2 - 1]),
-        frontPtr(startPtr + (copy.getFrontPtr() - copy.getStartPtr())),
-        backPtr(startPtr + (copy.getBackPtr() - copy.getStartPtr())),
-        maxSize(copy.max_size()) {
-        for (int i = copy.getFrontPtr() - copy.getStartPtr(); i <= copy.getBackPtr() - copy.getStartPtr(); ++i)
-            startPtr[i] = copy.getStartPtr()[i];
-    };
-
-    template <class T>  // дестркутор с простой очиткой памяти
-    deque<T>::~deque() { delete[] startPtr; };
-
-    template <class T>  // вернет текущий размер дека
-    int deque<T>::size() { return backPtr - frontPtr + 1; }
-    template <class T>  // вернет максимальный размер дека в одну сторону (относительно начального указателя)
-    int deque<T>::max_size() const { return maxSize; }
-
-    template <class T>  // возврашает элемент в начале дека
-    T& deque<T>::front() { return *frontPtr; };
-    template <class T>  // возвращает элемент в конце дека
-    T& deque<T>::back() { return *backPtr; }
-
-    template <class T>  // добавление элемента в начало дека
-    void deque<T>::push_front(T newElem) { *(--frontPtr) = newElem; };
-    template <class T>  // добавление элемента в конец дека
-    void deque<T>::push_back(T newElem) { *(++backPtr) = newElem; };
-
-    template <class T>  // удаление элемента из начала дека
-    T& deque<T>::pop_front() { return *(frontPtr++); };
-    template <class T>  // удаление элемента из конца дека
-    T& deque<T>::pop_back() { return *(backPtr--); };
-
-    template <class T>  // вернет True, если дек пуст, и False, если дек не пуст
-    bool deque<T>::empty() { return backPtr < frontPtr; }
-
-    template <class T>  // очищает дек, не удаляя элементы, просто сдвигая указатели
-    void deque<T>::clear() {
-        frontPtr = startPtr + maxSize - 1;
-        backPtr = startPtr + maxSize - 2;
+    T& deque<T>::back() {
+        if (first == last)
+            throw out_of_range("deque front");
+        return data[last];
     }
 
-    template <class T>  // обращаестя к нужному элементу дека по очереди считая от начала (асимптотика O(1))
-    T& deque<T>::operator[](int index) { return frontPtr[index]; }
-    template <class T>  // аналогичен operator[]
-    T& deque<T>::at(int index) { return frontPtr[index]; }
+    template <class T>
+    void deque<T>::push_front(T elem) {
+        if (last == (first - 1) % data.size()) {
+            vector<T> vec(data.capacity * 2);
+            vec.pb(elem);
+            for (int i = 0; i < size(); ++i:)
+                vec.pb(this->[i]);
+            data = vec;
+            first = 0;
+            last = vec.size();
+        }
+        else {
+            first = (first - 1) % data.size();
+            data[first] = newElem;
+        }
+    }
 
-    template <class T>  // полное поэлементное копирование
-    void deque<T>::operator=(deque& copy) {
-        startPtr = new T[copy.max_size() * 2 - 1];
-        frontPtr = startPtr + (copy.getFrontPtr() - copy.getStartPtr());
-        backPtr = startPtr + (copy.getBackPtr() - copy.getStartPtr());
-        maxSize = copy.max_size();
-        for (int i = copy.getFrontPtr() - copy.getStartPtr(); i <= copy.getBackPtr() - copy.getStartPtr(); ++i)
-            startPtr[i] = copy.getStartPtr()[i];
-    };
+    template <class T>
+    void deque<T>::push_back(T newElem) {
+        if (first == (last +  1) % data.size()) {
+            vector<T> vec(data.capacity * 2);
+            for (int i = 0; i < size(); ++i:)
+                vec.pb(this->[i]);
+            vec.pb(elem);
+            data = vec;
+            first = 0;
+            last = vec.size();
+        }
+        else {
+            data[last] = newElem;
+            last = (last + 1) % data.size();
+        }
+    }
 
-    template <class T>  // итератор на начало дека
-    auto deque<T>::begin() { return frontPtr; }
-    template <class T>  // итератор на следующую ячейку за концом дека
-    auto deque<T>::end() { return backPtr + 1; }
+    template <class T>
+    T deque<T>::pop_front() {
+        int now = first;
+        first = (first + 1) % data.size();
+        return data[now];
+    }
+    
+    template <class T>
+    T deque<T>::pop_back() {
+        last = (last - 1) % data.size();
+        return data[last];
+    }
 
-    template <class T>  // вернет размер
-    deque<T>::operator int() { return size(); }
-    template <class T>  // вернет True, если дек не пуст, и False, если дек пуст
-    deque<T>::operator bool() { return backPtr >= frontPtr; }
+    template <class T>
+    bool deque<T>::empty() {
+        return first == last;
+    }
+
+    template <class T>
+    void deque<T>::clear() {
+        data = vector<T>(1);
+        first = last = 0;
+    }
+
+    template <class T>
+    T& deque<T>::operator[](int ind) {
+        if (ind < 0 || ind >= size())
+            out_of_range("deque index");
+        return data[(first + ind) % data.size()];
+    }
+
+    template <class T>
+    deque<T>::operator int() {
+        return size();
+    }
+    
+    template <class T>
+    deque<T>::operator bool() {
+        return !empty();
+    }
 }
 
 #endif
