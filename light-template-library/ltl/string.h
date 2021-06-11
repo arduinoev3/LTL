@@ -99,21 +99,22 @@ namespace ltd {
     }
 
     bool string::empty() {
-        return data.empty();
+        return data.size() == 1;
     }
 
     void string::clear() {
         data.clear();
+        data.pb('\0');
     }
 
     char& string::operator[](const int ind) {
-        if (ind < 0 || data.size() <= ind)
+        if (ind < 0 || data.size() - 1 <= ind)
             throw out_of_range("string range");
         return data[ind];
     }
 
     const char& string::operator[](const int ind) const {
-        if (ind < 0 || data.size() <= ind)
+        if (ind < 0 || data.size() - 1 <= ind)
             throw out_of_range("string range");
         return data[ind];
     }
@@ -131,7 +132,7 @@ namespace ltd {
     }
 
     string::operator int() {
-        return size();
+        return size() - 1;
     }
 
     string::operator bool() {
@@ -152,8 +153,9 @@ namespace ltd {
 
     string operator+(string a, string b) {
         string ans;
-        a.pop_back();
-        return a + b;
+        for (char i : b)
+            a.pb(i);
+        return a;
     }
 
     string operator+(string a, char b) {
@@ -206,11 +208,13 @@ namespace ltd {
         return a;
     }
 
-    string operator*(string& a, int b) {
+    string operator*(string a, int b) {
         string ans;
+        a.pop_back();
         for (int i = 0; i < b; ++i)
             for (char j : a)
                 ans += j;
+        ans.pb('\0');
         return ans;
     }
 
