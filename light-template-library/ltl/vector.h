@@ -38,27 +38,7 @@ namespace ltd {
         friend class string;
     };
 
-#ifdef _IOSTREAM_
-    template <class T>
-    std::ostream& operator<< (std::ostream& out, const vector<T>& vec) {
-        out << '[';
-        for (int i = 0; i < vec.size() - 1; ++i)
-            out << vec[i] << ", ";
-        out << vec[vec.size() - 1] << ']';
-        return out;
-    }
-#endif
-
-#ifdef IOSTREAM_LTD
-    template <class T>
-    ltd::ostream& operator<< (ltd::ostream& out, const vector<T>& vec) {
-        out << '[';
-        for (int i = 0; i < vec.size() - 1; ++i)
-            out << vec[i] << ", ";
-        out << vec[vec.size() - 1] << ']';
-        return out;
-    }
-#endif
+    
 
     template <class T>
     vector<T>::vector() : ptr(NULL), now(0), capacity(0) {}
@@ -234,6 +214,24 @@ namespace ltd {
     vector<T> operator*=(vector<T>& a, int b) {
         a = a * b;
         return a;
+    }
+
+    template <class T>
+    std::ostream& operator<< (std::ostream& out, const vector<T>& vec) {
+        out << '[';
+        for (int i = 0; i < vec.size() - 1; ++i)
+            out << vec[i] << ", ";
+        out << vec[vec.size() - 1] << ']';
+        return out;
+    }
+
+    template <class T>
+    ostream& operator<<(ostream& out, vector<T> vec) {
+        out << '[';
+        for (int i = 0; i < vec.size() - 1; ++i)
+            out << vec[i] << ", ";
+        out << vec[vec.size() - 1] << ']';
+        return out;
     }
 }
 

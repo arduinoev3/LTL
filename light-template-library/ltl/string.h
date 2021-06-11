@@ -6,8 +6,12 @@
 #include "exception.h"
 #include "vector.h"
 
+#include <string>
+
 namespace ltd {
-    class string {
+    typedef std::string string;
+
+    /*class string {
         vector<char> data;
     public:
         string();
@@ -221,8 +225,7 @@ namespace ltd {
     string operator*=(string& a, int b) {
         a = a * b;
         return a;
-    }
-}
+    }*/
 
     string to_string(const char* conv) {
         return string(conv);

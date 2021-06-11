@@ -52,16 +52,7 @@ namespace ltd {
     }
 #endif
 
-#ifdef IOSTREAM_LTD
-    template <class T>
-    ltd::ostream& operator<< (ltd::ostream& out, const deque<T>& dec) {
-        out << '[';
-        for (int i = 0; i < dec.size() - 1; ++i)
-            out << dec[i] << ", ";
-        out << dec[vec.size() - 1] << ']';
-        return out;
-    }
-#endif
+
 
     template <class T>
     deque<T>::deque() : data(1), first(0), last(0) {}

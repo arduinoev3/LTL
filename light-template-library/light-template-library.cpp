@@ -4,19 +4,18 @@ void write_one(char c) {
 }
 #include "ltl/iostream.h"
 #include "ltl/vector.h"
-#include "ltl/string.h"
-#include "ltl/deque.h"
 
 using namespace ltd;
 
 int main()
 {
+    ostream mout(write_one);
     try {
         vector <int> v(5, 7);
         v *= 2;
-        out << v;
+        mout << v;
     }
     catch (exception& exc) {
-        out << exc.what();
+        mout << exc.what();
     }
 }
