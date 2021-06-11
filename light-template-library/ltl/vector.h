@@ -27,13 +27,15 @@ namespace ltd {
         void clear();
         T& operator[](const int);
         const T& operator[](const int) const;
-        void operator=(const vector&); // полное поэлементное копирование
+        void operator=(const vector&);
 
         operator int();
         operator bool();
         T* begin();
         T* end();
         void erase(T*);
+
+        friend class string;
     };
 
 
@@ -50,7 +52,7 @@ namespace ltd {
 
 #ifdef IOSTREAM_LTD
     template <class T>
-    ostream& operator<< (ostream& out, const vector<T>& vec) {
+    ltd::ostream& operator<< (ltd::ostream& out, const vector<T>& vec) {
         out << '[';
         for (int i = 0; i < vec.size() - 1; ++i)
             out << vec[i] << ", ";
@@ -62,7 +64,7 @@ namespace ltd {
     
 
     template <class T>
-    vector<T>::vector() : ptr(NULL), now(0), capacity(0) {};
+    vector<T>::vector() : ptr(NULL), now(0), capacity(0) {}
 
     template <class T>
     vector<T>::vector(int need) : ptr(new T[need]), now(need), capacity(need) {}
@@ -219,6 +221,21 @@ namespace ltd {
     template<class T>
     vector<T>& operator+=(vector<T>& a, T b) {
         a = a + b;
+        return a;
+    }
+
+    template<class T>
+    vector<T> operator*(vector<T>& a, int b) {
+        vector <T> ans;
+        for (int i = 0; i < b; ++i)
+            for (T j : a)
+                ans += j;
+        return ans;
+    }
+
+    template<class T>
+    vector<T> operator*=(vector<T>& a, int b) {
+        a = a * b;
         return a;
     }
 }

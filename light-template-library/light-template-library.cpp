@@ -12,9 +12,9 @@ using namespace ltd;
 int main()
 {
     try {
-        vector <int> v(5, 7), f(3, 6);
-        v = 5 + v;
-        out << v + f + 8;
+        vector <int> v(5, 7);
+        v *= 2;
+        out << v;
     }
     catch (exception& exc) {
         out << exc.what();
