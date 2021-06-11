@@ -93,8 +93,8 @@ namespace ltd {
 
     template <class T>
     void deque<T>::push_front(T elem) {
-        if ((first - 1) % capacity == last) {
-            T* newPtr = new T[capacity *= 2];
+        if ((capacity + first - 1) % capacity == last) {
+            T* newPtr = new T[capacity * 2];
             newPtr[0] = elem;
             int i = 0;
             while (i < size()) {
@@ -103,11 +103,12 @@ namespace ltd {
             }
             delete[] ptr;
             ptr = newPtr;
+            capacity *= 2;
             first = 0;
-            last = i;
+            last = i + 1;
         }
         else {
-            first = (first - 1) % capacity;
+            first = (capacity + first - 1) % capacity;
             ptr[first] = elem;
         }
     }
@@ -115,7 +116,7 @@ namespace ltd {
     template <class T>
     void deque<T>::push_back(T elem) {
         if ((last + 1) % capacity == first) {
-            T* newPtr = new T[capacity *= 2];
+            T* newPtr = new T[capacity * 2];
             int i = 0;
             while (i < size()) {
                 newPtr[i] = (*this)[i];
@@ -125,6 +126,7 @@ namespace ltd {
             ++i;
             delete[] ptr;
             ptr = newPtr;
+            capacity *= 2;
             first = 0;
             last = i;
         }
@@ -139,7 +141,7 @@ namespace ltd {
         if (first == last)
             throw out_of_range("deque pop front");
         int now = first;
-        first = (first + 1) % capacity;
+        first = (capacity + first + 1) % capacity;
         return ptr[now];
     }
     
