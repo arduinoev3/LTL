@@ -22,8 +22,8 @@ namespace ltd {
         T& front();
         T& back();
 
-        void push_front(T);
-        void push_back(T);
+        void push_front(const T&);
+        void push_back(const T&);
 
         T& pop_front();
         T& pop_back();
@@ -92,7 +92,7 @@ namespace ltd {
     }
 
     template <class T>
-    void deque<T>::push_front(T elem) {
+    void deque<T>::push_front(const T& elem) {
         if ((capacity + first - 1) % capacity == last) {
             T* newPtr = new T[capacity * 2];
             newPtr[0] = elem;
@@ -114,8 +114,11 @@ namespace ltd {
     }
 
     template <class T>
-    void deque<T>::push_back(T elem) {
-        if (((last + 1 == capacity) ? (0) : (last + 1)) == first) {
+    inline void deque<T>::push_back(const T& elem) {
+        ptr[last] = elem;
+        if (++last == capacity)
+            last = 0;
+        if (last == first) {
             T* newPtr = new T[capacity * 2];
             int i = 0;
             while (i < size()) {
@@ -130,21 +133,14 @@ namespace ltd {
             first = 0;
             last = i;
         }
-        else {
-            ptr[last] = elem;
-            last += 1;
-            if (last == capacity)
-                last = 0;
-        }
     }
 
     template <class T>
-    T& deque<T>::pop_front() {
+    inline T& deque<T>::pop_front() {
         if (first == last)
             throw out_of_range("deque pop front");
         int now = first;
-        first += 1;
-        if (first == capacity)
+        if (++first == capacity)
             first = 0;
         return ptr[now];
     }

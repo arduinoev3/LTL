@@ -5,6 +5,7 @@
 
 #include "ltl/exception.h"
 
+
 namespace ltd {
     template <class T>
     class vector {
@@ -19,36 +20,53 @@ namespace ltd {
         vector(const vector& copy);
         ~vector();
 
-        void pb(T);
-        void push_back(T);
+        void pb(const T&);
+        void push_back(const T&);
         void pop_back();
+
         int size() const;
         int max_size();
         bool empty();
         void clear();
+
         T& operator[](int);
         const T& operator[](int) const;
-        void operator=(const vector&);
+        vector<T>& operator=(const vector&);
 
         operator int();
         operator bool();
+
         T* begin();
         T* end();
+
         void erase(T*);
 
         friend class string;
     };
 
     template <class T>
-    vector<T>::vector() : ptr(NULL), now(0), capacity(0) {}
+    vector<T>::vector() : ptr(new T[1]), now(0), capacity(1) {}
 
     template <class T>
-    vector<T>::vector(int need) : ptr(new T[need]), now(need), capacity(need) {}
+    vector<T>::vector(int need) {
+        if (need < 1)
+            throw invalid_argument("vector init size");
+        ptr = new T[need];
+        now = need;
+        capacity = need;
+    }
 
     template <class T>
-    vector<T>::vector(int need, T write) : ptr(new T[need]), now(need), capacity(need) {
-        for (int i = 0; i < now; ++i)
-            ptr[i] = write;
+    vector<T>::vector(int need, T write) {
+        if (need < 1)
+            throw invalid_argument("vector init size");
+        ptr = new T[need];
+        now = need;
+        capacity = need;
+        register T* _ptr = ptr;
+        T* end = ptr + now;
+        for (register T* _ptr = ptr; _ptr != end; ++_ptr)
+            *_ptr = write;
     }
 
     template <class T>
@@ -56,9 +74,10 @@ namespace ltd {
         now = copy.now;
         ptr = new T[now];
         capacity = now;
+
         register T* to_ptr = ptr;
         register T* from_ptr = copy.ptr;
-        register T* end = from_ptr + copy.size();
+        T* end = from_ptr + now;
 
         while (from_ptr != end) {
             *to_ptr = *from_ptr;
@@ -83,23 +102,29 @@ namespace ltd {
     }
 
     template <class T>
-    void vector<T>::pb(T elem) {
-        if (now >= capacity) {
-            if (capacity == 0)
-                capacity = 1;
-            capacity = capacity * 2;
+    void vector<T>::pb(const T& elem) {
+        if (now == capacity) {
+            capacity *= 2;
+
             T* new_ptr = new T[capacity];
-            for (int i = 0; i < now; ++i)
-                new_ptr[i] = ptr[i];
+
+            register T* _new_ptr = new_ptr;
+            register T* c_ptr = ptr;
+            T* end = ptr + now;
+            while (c_ptr != end) {
+                *_new_ptr = *c_ptr;
+                ++c_ptr;
+                ++_new_ptr;
+            }
+
             delete[] ptr;
             ptr = new_ptr;
         }
-        ptr[now] = elem;
-        now++;
+        ptr[now++] = elem;
     }
 
     template <class T>
-    void vector<T>::push_back(T elem) {
+    inline void vector<T>::push_back(const T& elem) {
         (*this).pb(elem);
     }
 
@@ -115,10 +140,7 @@ namespace ltd {
 
     template <class T>
     void vector<T>::clear() {
-        delete[] ptr;
-        ptr = NULL;
         now = 0;
-        capacity = 0;
     }
 
     template <class T>
@@ -136,21 +158,25 @@ namespace ltd {
     }
 
     template <class T>
-    void vector<T>::operator=(const vector& copy) {
-        if (ptr)
-            delete[] ptr;
+    vector<T>& vector<T>::operator=(const vector& copy) {
         now = copy.now;
-        ptr = new T[now];
-        capacity = now;
+        if (capacity < copy.now) {
+            delete[] ptr;
+            ptr = new T[copy.now];
+            capacity = copy.now;
+        }
+
         register T* to_ptr = ptr;
         register T* from_ptr = copy.ptr;
-        register T* end = from_ptr + copy.size();
+        T* end = from_ptr + copy.size();
 
         while (from_ptr != end) {
             *to_ptr = *from_ptr;
             ++to_ptr;
             ++from_ptr;
         }
+
+        return *this;
     }
 
     template <class T>
@@ -164,12 +190,12 @@ namespace ltd {
     }
 
     template <class T>
-    T* vector<T>::begin() {
+    inline T* vector<T>::begin() {
         return ptr;
     }
 
     template <class T>
-    T* vector<T>::end() {
+    inline T* vector<T>::end() {
         return ptr + now;
     }
 

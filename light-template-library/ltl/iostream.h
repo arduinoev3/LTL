@@ -108,6 +108,11 @@ namespace ltd {
     }
 
     template <class F, class S>
+    bool operator!=(const pair<F, S> a, const pair<F, S> b) {
+        return a.first != b.first || a.second != b.second;
+    }
+
+    template <class F, class S>
     pair<F, S> make_pair(const F& _first, const S& _second) {
         return pair<F, S>(_first, _second);
     }
