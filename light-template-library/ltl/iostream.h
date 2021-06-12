@@ -79,6 +79,38 @@ namespace ltd {
         return out;
     }
 
+    template <class F, class S>
+    struct pair {
+        F first;
+        S second;
+
+        pair() {}
+
+        pair(const F& _first, const S& _second) {
+            first = _first;
+            second = _second;
+        }
+
+        pair(const pair<F, S>& copy) {
+            first = copy.first;
+            second = copy.second;
+        }
+
+        void operator=(const pair<F, S> copy) {
+            first = copy.first;
+            second = copy.second;
+        }
+    };
+
+    template <class F, class S>
+    bool operator==(const pair<F, S> a, const pair<F, S> b) {
+        return a.first == b.first && a.second == b.second;
+    }
+
+    template <class F, class S>
+    pair<F, S> make_pair(const F& _first, const S& _second) {
+        return pair<F, S>(_first, _second);
+    }
 
 
 #ifdef _IOSTREAM_

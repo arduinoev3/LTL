@@ -44,7 +44,7 @@ namespace ltd {
 
     template <class T>
     vector<T>::vector(int need) : ptr(new T[need]), now(need), capacity(need) {}
-    //                                                 (error)      
+
     template <class T>
     vector<T>::vector(int need, T write) : ptr(new T[need]), now(need), capacity(need) {
         for (int i = 0; i < now; ++i)
@@ -52,9 +52,19 @@ namespace ltd {
     }
 
     template <class T>
-    vector<T>::vector(const vector& copy) : ptr(new T[copy.now]), now(copy.now), capacity(copy.now) {
-        for (int i = 0; i < now; ++i)
-            ptr[i] = copy[i];
+    vector<T>::vector(const vector& copy) {
+        now = copy.now;
+        ptr = new T[now];
+        capacity = now;
+        register T* to_ptr = ptr;
+        register T* from_ptr = copy.ptr;
+        register T* end = from_ptr + copy.size();
+
+        while (from_ptr != end) {
+            *to_ptr = *from_ptr;
+            ++to_ptr;
+            ++from_ptr;
+        }
     }
 
     template <class T>
@@ -127,12 +137,20 @@ namespace ltd {
 
     template <class T>
     void vector<T>::operator=(const vector& copy) {
-        delete[] ptr;
-        ptr = new T[copy.now];
+        if (ptr)
+            delete[] ptr;
         now = copy.now;
-        capacity = copy.now;
-        for (int i = 0; i < now; ++i)
-            ptr[i] = copy[i];
+        ptr = new T[now];
+        capacity = now;
+        register T* to_ptr = ptr;
+        register T* from_ptr = copy.ptr;
+        register T* end = from_ptr + copy.size();
+
+        while (from_ptr != end) {
+            *to_ptr = *from_ptr;
+            ++to_ptr;
+            ++from_ptr;
+        }
     }
 
     template <class T>
