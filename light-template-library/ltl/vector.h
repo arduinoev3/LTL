@@ -43,8 +43,8 @@ namespace ltd {
     vector<T>::vector() : ptr(NULL), now(0), capacity(0) {}
 
     template <class T>
-    vector<T>::vector(int need) : ptr(new T[need]), now(0), capacity(need) {}
-
+    vector<T>::vector(int need) : ptr(new T[need]), now(need), capacity(need) {}
+    //                                                 (error)      
     template <class T>
     vector<T>::vector(int need, T write) : ptr(new T[need]), now(need), capacity(need) {
         for (int i = 0; i < now; ++i)

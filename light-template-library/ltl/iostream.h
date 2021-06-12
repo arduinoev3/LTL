@@ -52,6 +52,14 @@ namespace ltd {
             }
             return *this;
         }
+
+        ostream& operator<<(bool x) {
+            string s = to_string(x);
+            for (int i = 0; i < s.size(); ++i) {
+                def(s[i]);
+            }
+            return *this;
+        }
     };
 
     ostream& operator<< (ostream& out, string& s) {
@@ -70,6 +78,8 @@ namespace ltd {
         out << ']';
         return out;
     }
+
+
 
 #ifdef _IOSTREAM_
     void write_one(char c) {

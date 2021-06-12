@@ -257,6 +257,12 @@ namespace ltd {
         }
         return ans;
     }
+    string to_string(bool conv) {
+        if (conv)
+            return string("True");
+        else
+            return string("False");
+    }
 }
 
 #endif
