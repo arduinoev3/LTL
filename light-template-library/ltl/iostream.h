@@ -125,4 +125,4 @@ namespace ltd {
     ostream cout(write_one);
 #endif // _IOSTREAM_
 }
-#endif
+#endif // IOSTREAM_LTD

@@ -200,15 +200,18 @@ namespace ltd {
     }
 
     template <class T>
-    void vector<T>::erase(T* item) {
-        if (item == end())
-            return;
-        item++;
-        while (item != end()) {
-            *(item - 1) = *item;
-            item++;
+    void vector<T>::erase(register T* item) {
+        if (item < end()) {
+            if (item < ptr)
+                throw invalid_argument("vector erase");
+
+            T* ending = end() - 1;
+            while (item != ending) {
+                *item = *(item + 1);
+                ++item;
+            }
+            --now;
         }
-        now--;
     }
 
     template<class T>
