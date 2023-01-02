@@ -17,7 +17,7 @@ namespace ltd {
         vector();
         vector(int);
         vector(int, T);
-        vector(const vector& copy);
+        vector(const vector&);
         ~vector();
 
         void pb(const T&);
